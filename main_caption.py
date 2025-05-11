@@ -1,11 +1,11 @@
 import torch
-import argparse
 from transformers import AutoModelForCausalLM, AutoProcessor, set_seed
 from PIL import Image
 from pathlib import Path
 from huggingface_hub import snapshot_download
 import warnings
 import logging
+import os
 
 warnings.filterwarnings("ignore", message="Importing from timm.models.layers is deprecated")
 warnings.filterwarnings("ignore", category=FutureWarning, message=r".*Florence2LanguageForConditionalGeneration.*")
@@ -14,6 +14,11 @@ logging.getLogger("transformers").setLevel(logging.ERROR)
 
 
 # python main_caption.py "F:\ComfyUI_windows_portable\ComfyUI\output\ComfyUI_00903_.png"
+path_image = r"F:\ComfyUI_windows_portable\ComfyUI\output\ComfyUI_00903_.png"
+
+
+nom_fichier_avec_extension = os.path.basename(path_image)
+print(nom_fichier_avec_extension)  # Output: fichier.txt
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE  = torch.float16
@@ -52,7 +57,14 @@ def caption(path, seed=100):
     return txt.replace("<s>", "").replace("</s>", "").strip()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("img")
-    args = parser.parse_args()
-    print(caption(args.img))
+    
+    print(caption(path_image))
+
+# Obtenir le résultat de la fonction caption et le stocker dans une variable
+    resultat_caption = caption(path_image)
+    output_text = os.path.splitext(nom_fichier_avec_extension)[0] + ".txt"
+
+# Ouvrir un fichier en mode écriture ('w')
+    with open(output_text, "w", encoding="utf-8") as fichier:
+        # Écrire le contenu de la variable dans le fichier
+        fichier.write(resultat_caption)
