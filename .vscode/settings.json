@@ -1,0 +1,6 @@
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#FF0000", // Rouge
+        "titleBar.inactiveBackground": "#0f9e8b" // Rouge foncé
+    }
+}
