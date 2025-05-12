@@ -11,7 +11,7 @@ from huggingface_hub import snapshot_download
 from PIL import UnidentifiedImageError
 
 # ---------------------------------------------------------------------------
-#  Paramètres généraux MiaoshouAI/Florence‑2‑base‑PromptGen‑v2.0
+#  Paramètres généraux 
 # ---------------------------------------------------------------------------
 CAPTION_PREFIX = "Norman, "        # laisse chaîne vide "" si tu ne veux rien
 
@@ -26,6 +26,8 @@ warnings.filterwarnings(
 logging.getLogger("transformers").setLevel(logging.ERROR)
 
 # ───────────────────────── 2. Dossiers et modèles ───────────────────────
+# Model : MiaoshouAI/Florence‑2‑base‑PromptGen‑v2.0 : https://huggingface.co/MiaoshouAI/Florence-2-base-PromptGen-v2.0
+
 ROOT_DIR     = Path(__file__).parent           # dossier du script
 INPUT_DIR    = ROOT_DIR / "input"
 OUTPUT_DIR   = ROOT_DIR / "output"
