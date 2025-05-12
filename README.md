@@ -1,9 +1,9 @@
 # Florence 2 Caption Tool
 
-Génère automatiquement des descriptions détaillées (captions) pour toutes les images placées dans le dossier **`input/`** et écrit chaque résultat dans **`output/`** sous le même nom + `.txt`.
+Génère automatiquement des descriptions détaillées des images via Florence 2. 
 
 > ⚡ Optimisé : GPU CUDA, FP16, SDPA & modèle local (PromptGen v2).  
-> 🪶 Léger : aucun poids de modèle n’est versionné dans Git.
+
 
 ---
 
@@ -21,4 +21,8 @@ Génère automatiquement des descriptions détaillées (captions) pour toutes le
 ---
 
 ## 📂 Structure du projet
+Effectue un captionning de toutes les images presentes dans **`input/`** et écrit chaque résultat dans **`output/`** sous le même nom + `.txt`.
 
+## Utilisation
+
+Placez vos images dans **`input/`**, puis lancez **`start.bat`**

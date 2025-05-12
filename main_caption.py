@@ -11,7 +11,7 @@ from huggingface_hub import snapshot_download
 from PIL import UnidentifiedImageError
 
 # ---------------------------------------------------------------------------
-#  Paramètres généraux
+#  Paramètres généraux MiaoshouAI/Florence‑2‑base‑PromptGen‑v2.0
 # ---------------------------------------------------------------------------
 CAPTION_PREFIX = "Norman, "        # laisse chaîne vide "" si tu ne veux rien
 
