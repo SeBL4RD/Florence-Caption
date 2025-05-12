@@ -6,6 +6,14 @@ Outil conçu pour la creation de dataset d'images pour les entrainements (Stable
 > ⚡ Optimisé : GPU CUDA, FP16, SDPA & modèle local (PromptGen v2).  
 
 
+## Requirements
+❗ Windows seulement pour le moment.
+
+Python 3.10 : https://www.python.org/ftp/python/3.10.11/python-3.10.11-amd64.exe
+Cochez "Add PATH to envirronement" lors de l'installation, puis redemarrez Windows.
+
+Une carte Nvidia (recente) de preference, meme avec peu de Vram.
+
 ---
 
 ## ✨ Fonctionnalités

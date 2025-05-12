@@ -7,6 +7,13 @@ Ideal for building datasets for model training
 > ⚡ Optimized for GPU (CUDA, FP16, SDPA) and local model execution (PromptGen v2)
 
 ---
+## Requirements
+❗ Windows only for now.
+
+Python 3.10 : https://www.python.org/ftp/python/3.10.11/python-3.10.11-amd64.exe
+Check "Add PATH to envirronement" during installation, then restart Windows.
+
+Preferably a (recent) Nvidia card, even with little Vram.
 
 ## ✨ Features
 
