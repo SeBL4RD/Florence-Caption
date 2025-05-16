@@ -29,7 +29,53 @@ def start_ui():
     .small-left-button {
         width: 200px;
         margin-left: 0;
-        margin-right: 800px;
+        margin-right: 1000px;
+    }
+    .statut-message {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        border: none !important;
+        background-color: transparent !important;
+        color: #aaffaa;
+        font-weight: bold;
+        padding-left: 10px;
+        box-shadow: none !important;
+    }
+    .load-btn {
+        height: 40px;
+        width: 200px;
+        margin-left: 0;
+        margin-right: 10px;
+    }
+
+    .status-text textarea {
+        height: 36px !important;          /* hauteur égale au bouton */
+        line-height: 36px !important;     /* alignement vertical du texte */
+        padding: 0 8px !important;        /* petit padding horizontal */
+        font-size: 14px;
+        
+        border: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        color: #aaffaa;
+        font-weight: bold;
+        resize: none !important;
+    }
+    .status-text {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .status-text > div {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     """) as interface:
         with gr.Column(elem_classes=["center-column"]):
@@ -45,15 +91,17 @@ def start_ui():
             )
 
             with gr.Row():
-                load_button = gr.Button("🔍 Charger les images", elem_classes=["small-left-button"])
+                load_button = gr.Button("🔍 Charger les images", elem_classes=["load-btn"])
+                status_output = gr.Textbox(
+                    show_label=False,
+                    interactive=False,
+                    lines=1,
+                    max_lines=1,
+                    value="",
+                    scale=4,
+                    elem_classes=["status-text"]
+                )
 
-            # Ajoute ceci AVANT le .click()
-            status_output = gr.Textbox(
-                label="Statut",
-                interactive=False,
-                visible=True,
-                value=""
-            )
 
             # Et ensuite tu fais le .click()
             load_button.click(
