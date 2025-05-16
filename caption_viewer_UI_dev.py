@@ -145,7 +145,11 @@ def start_ui():
                 inputs=[folder_input],
                 outputs=[status_output] + images + textboxes
             )
-    interface.launch()
+    interface.launch(
+    allowed_paths=[
+        r"F:\Stable Diffusion\TRAIN LoRA 2024\Leah_v6_SDXL_1024 FLUX$\img\40_le@hp0nyv41 woman"
+    ]
+)
 
 if __name__ == "__main__":
     start_ui()
