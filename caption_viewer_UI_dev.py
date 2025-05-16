@@ -1,29 +1,38 @@
 import gradio as gr
 import os
 from math import ceil
+from pathlib import Path
 import glob
 
+MAX_IMAGES = 20
 
+def charger_images_et_prompts(chemin: str):
+    images_prompts = []
+    dossier_path = Path(chemin)
+    if not dossier_path.exists():
+        return []
+    for img_path in sorted(dossier_path.glob("*")):
+        if img_path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
+            txt_path = img_path.with_suffix(".txt")
+            texte = txt_path.read_text(encoding="utf-8") if txt_path.exists() else ""
+            images_prompts.append((str(img_path), texte))
+    return images_prompts[:MAX_IMAGES]
 
-
-def verifier_dossier(chemin):
-    if os.path.isdir(chemin):
-        return f"✅ Dossier trouvé : {chemin}"
-    else:
-        return f"❌ Dossier introuvable : {chemin}"
-
-def charger_images_dossier(chemin):
+def afficher_images(chemin):
     if not os.path.isdir(chemin):
-        return f"❌ Dossier introuvable : {chemin}", []
-
-    # On accepte jpg/png/jpeg/webp
-    extensions = ("*.jpg", "*.jpeg", "*.png", "*.webp")
-    fichiers = []
-    for ext in extensions:
-        fichiers.extend(glob.glob(os.path.join(chemin, ext)))
-
-    fichiers = sorted(fichiers)[:20]  # On limite à 20 max
-    return f"✅ {len(fichiers)} image(s) trouvée(s)", fichiers
+        return "❌ Dossier introuvable : " + chemin, *([None]*MAX_IMAGES), *([None]*MAX_IMAGES)
+    contenu = charger_images_et_prompts(chemin)
+    status = f"✅ {len(contenu)} image(s) trouvée(s)" if contenu else "⚠️ Aucun fichier image trouvé"
+    # Remplir les sorties
+    image_values = []
+    prompt_values = []
+    for img, txt in contenu:
+        image_values.append(img)
+        prompt_values.append(txt)
+    # Compléter à 20 si moins
+    image_values += [None] * (MAX_IMAGES - len(image_values))
+    prompt_values += [None] * (MAX_IMAGES - len(prompt_values))
+    return status, *image_values, *prompt_values
 
 def start_ui():
     with gr.Blocks(css="""
@@ -103,16 +112,13 @@ def start_ui():
     """) as interface:
         with gr.Column(elem_classes=["center-column"]):
             gr.Markdown("# 🖥️ Mon interface Gradio de test")
-            
-            
             folder_input = gr.Textbox(
-                label="Dossier contenant les images", # Affiche un titre au-dessus
-                placeholder="Exemple : ./images", # Affiche un texte grisé à l’intérieur du champ
-                value=".",  # Valeur par défaut du champ
-                interactive=True, # Permet à l'utilisateur de modifier le champ
-                elem_classes=["narrow-input"]  # <-- c’est ça qui lie le CSS à ce champ
+                label="Dossier contenant les images",
+                placeholder="Exemple : ./images",
+                value=".",
+                interactive=True,
+                elem_classes=["narrow-input"]
             )
-
             with gr.Row():
                 load_button = gr.Button("🔍 Charger les images", elem_classes=["load-btn"])
                 status_output = gr.Textbox(
@@ -124,23 +130,21 @@ def start_ui():
                     scale=4,
                     elem_classes=["status-text"]
                 )
-
-            image_gallery = gr.Gallery(
-                label="Images trouvées",
-                show_label=True,
-                elem_id="image-gallery",
-                columns=5,
-                rows=1,
-                object_fit="contain",
-                height=200
-            )
-            # Et ensuite tu fais le .click()
+            # 20 lignes d’images + prompts
+            images = []
+            textboxes = []
+            for i in range(MAX_IMAGES):
+                with gr.Row():
+                    img = gr.Image(label=f"Image {i+1}", show_label=False, height=200)
+                    txt = gr.Textbox(label="", lines=4, max_lines=10, show_label=False)
+                    images.append(img)
+                    textboxes.append(txt)
+            # Clic : remplit les 20 images + 20 champs
             load_button.click(
-                fn=charger_images_dossier,
+                fn=afficher_images,
                 inputs=[folder_input],
-                outputs=[status_output, image_gallery]
+                outputs=[status_output] + images + textboxes
             )
-                
     interface.launch()
 
 if __name__ == "__main__":
