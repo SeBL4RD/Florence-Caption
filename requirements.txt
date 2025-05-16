@@ -4,5 +4,5 @@ timm
 pillow
 peft
 accelerate>=0.26.0
-
+gradio
 einops
