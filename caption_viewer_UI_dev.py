@@ -11,7 +11,18 @@ def verifier_dossier(chemin):
     else:
         return f"❌ Dossier introuvable : {chemin}"
 
+def charger_images_dossier(chemin):
+    if not os.path.isdir(chemin):
+        return f"❌ Dossier introuvable : {chemin}", []
 
+    # On accepte jpg/png/jpeg/webp
+    extensions = ("*.jpg", "*.jpeg", "*.png", "*.webp")
+    fichiers = []
+    for ext in extensions:
+        fichiers.extend(glob.glob(os.path.join(chemin, ext)))
+
+    fichiers = sorted(fichiers)[:20]  # On limite à 20 max
+    return f"✅ {len(fichiers)} image(s) trouvée(s)", fichiers
 
 def start_ui():
     with gr.Blocks(css="""
@@ -50,11 +61,11 @@ def start_ui():
     }
 
     .status-text textarea {
-        height: 36px !important;          /* hauteur égale au bouton */
-        line-height: 36px !important;     /* alignement vertical du texte */
-        padding: 0 8px !important;        /* petit padding horizontal */
+        height: 34px !important;           /* pile la hauteur utile */
+        line-height: 34px !important;      /* aligne le texte dedans */
+        padding: 0 10px !important;        /* petit espace horizontal */
         font-size: 14px;
-        
+
         border: none !important;
         background-color: transparent !important;
         box-shadow: none !important;
@@ -77,6 +88,17 @@ def start_ui():
         padding: 0 !important;
         margin: 0 !important;
     }
+    /* Vise tous les conteneurs autour du textarea */
+        .status-text,
+        .status-text > div,
+        .status-text > div > div {
+            height: 39px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+    }               
     """) as interface:
         with gr.Column(elem_classes=["center-column"]):
             gr.Markdown("# 🖥️ Mon interface Gradio de test")
