@@ -1,10 +1,20 @@
 import gradio as gr
 import os
+import string
 from math import ceil
 from pathlib import Path
 import glob
 
 MAX_IMAGES = 20
+
+def get_all_drives():
+    drives = []
+    for letter in string.ascii_uppercase:
+        path = f"{letter}:\\"
+        if Path(path).exists():
+            drives.append(path)
+    return drives
+
 
 def charger_images_et_prompts(chemin: str):
     images_prompts = []
@@ -145,11 +155,7 @@ def start_ui():
                 inputs=[folder_input],
                 outputs=[status_output] + images + textboxes
             )
-    interface.launch(
-    allowed_paths=[
-        r"F:\Stable Diffusion\TRAIN LoRA 2024\Leah_v6_SDXL_1024 FLUX$\img\40_le@hp0nyv41 woman"
-    ]
-)
+    interface.launch(allowed_paths=get_all_drives())
 
 if __name__ == "__main__":
     start_ui()
