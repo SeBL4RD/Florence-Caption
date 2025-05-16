@@ -1,6 +1,7 @@
 import gradio as gr
 import os
 from math import ceil
+import glob
 
 
 
@@ -124,12 +125,20 @@ def start_ui():
                     elem_classes=["status-text"]
                 )
 
-
+            image_gallery = gr.Gallery(
+                label="Images trouvées",
+                show_label=True,
+                elem_id="image-gallery",
+                columns=5,
+                rows=1,
+                object_fit="contain",
+                height=200
+            )
             # Et ensuite tu fais le .click()
             load_button.click(
-                fn=verifier_dossier,
+                fn=charger_images_dossier,
                 inputs=[folder_input],
-                outputs=[status_output]
+                outputs=[status_output, image_gallery]
             )
                 
     interface.launch()

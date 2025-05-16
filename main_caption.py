@@ -3,7 +3,7 @@
 from pathlib import Path
 import warnings
 import logging
-
+from datetime import datetime
 import torch
 from PIL import Image
 from transformers import AutoModelForCausalLM, AutoProcessor, set_seed
@@ -34,6 +34,8 @@ OUTPUT_DIR   = ROOT_DIR / "output"
 MODELS_DIR   = ROOT_DIR / "models" / "FlorencePromptGen"
 MODEL_REPO   = "MiaoshouAI/Florence-2-base-PromptGen-v2.0"
 PROMPT_TOKEN = "<MORE_DETAILED_CAPTION>"
+TEMP_DIR = ROOT_DIR / "temp"
+
 
 DEVICE       = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE        = torch.float16 if DEVICE == "cuda" else torch.float32
@@ -87,9 +89,18 @@ def generate_caption(image_path: Path, seed: int = 100) -> str:
     text = processor.batch_decode(output_ids, skip_special_tokens=False)[0]
     return text.replace("<s>", "").replace("</s>", "").strip()
 
+
+def create_timestamped_dir(base_dir: Path) -> Path:
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    new_dir = base_dir / timestamp
+    new_dir.mkdir(parents=True, exist_ok=True)
+    return new_dir
+
+
 # ───────────────────────── 6. Boucle sur le dossier input/ ──────────────
 def main() -> None:
-    # Création du dossier output/ s'il n'existe pas
+    # Création des dossiers si besoin
+    TEMP_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Extensions d’images acceptées
@@ -104,20 +115,34 @@ def main() -> None:
 
     for image_path in images:
         try:
-            brut_caption   = generate_caption(image_path)
+            brut_caption = generate_caption(image_path)
         except (UnidentifiedImageError, OSError) as err:
-            # ←  message si l’image est illisible
             print(f"⚠️  {image_path.name} ignorée : {err}")
             continue
 
         final_caption = f"{CAPTION_PREFIX}{brut_caption}"
-        (OUTPUT_DIR / f"{image_path.stem}.txt").write_text(final_caption, encoding="utf-8")
-
-        # ←  message pour chaque image traitée avec succès
+        (TEMP_DIR / f"{image_path.stem}.txt").write_text(final_caption, encoding="utf-8")
         print(f"✔︎ {image_path.name} → {image_path.stem}.txt")
 
+    print("\nFusion dans un dossier horodaté...")
 
-    print("\nTerminé !")
+    # Création du dossier horodaté final dans output/
+    timestamped_dir = create_timestamped_dir(OUTPUT_DIR)
+
+    for image_path in images:
+        # Destination image
+        img_dest = timestamped_dir / image_path.name
+        # Destination .txt généré
+        txt_source = TEMP_DIR / f"{image_path.stem}.txt"
+        txt_dest = timestamped_dir / f"{image_path.stem}.txt"
+
+        if txt_source.exists():
+            image_path.replace(img_dest)
+            txt_source.replace(txt_dest)
+
+    print(f"\nTerminé. Tout est fusionné dans : {timestamped_dir}")
+
+
 
 # ────────────────────────── 7. Point d’entrée ───────────────────────────
 if __name__ == "__main__":
