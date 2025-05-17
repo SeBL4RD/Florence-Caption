@@ -21,7 +21,7 @@ from main_caption import (
 )
 
 # ---------- 3.  Petit utilitaire pour le flux de logs ----------
-def caption_stream(input_dir: str):
+def caption_stream(input_dir: str, user_prefix: str = ""):
     """Parcourt le dossier et yield les logs pour affichage temps réel."""
     try:
         folder = Path(input_dir)
@@ -39,10 +39,15 @@ def caption_stream(input_dir: str):
         logs = f"🔎 {len(images)} image(s) détectée(s)…\n\n"
         yield logs                       # 1ᵉʳ affichage
 
+        # préfixe : si l'utilisateur en a fourni un, on l'utilise ; sinon on
+        # reprend la constante CAPTION_PREFIX définie dans main_caption.py
+        prefix = user_prefix if user_prefix.strip() else CAPTION_PREFIX
         for idx, img in enumerate(images, 1):
+
             try:
                 brut = generate_caption(img)
                 caption = f"{CAPTION_PREFIX}{brut}"
+                caption = f"{prefix}{brut}"
                 (TEMP_DIR / f"{img.stem}.txt").write_text(caption, encoding="utf-8")
                 line = f"✔︎ ({idx}/{len(images)}) {img.name}"
             except Exception as e:
@@ -71,6 +76,12 @@ def build_batch_caption_tab():
             value="input/",
             interactive=True,
         )
+        prefix_in = gr.Textbox(
+            label='Prefix to prepend to every caption (optional)',
+            placeholder='e.g. "JosianneLoRAv2, "',
+            value="",                    # si vide → on garde le CAPTION_PREFIX par défaut
+            interactive=True,
+        )
         run_btn = gr.Button("🚀 Generate captions")
         log_box = gr.Textbox(
             label="Console output",
@@ -80,7 +91,7 @@ def build_batch_caption_tab():
 
         run_btn.click(
             caption_stream,          # ← appelle la fonction ci-dessus
-            inputs=[folder_in],
+            inputs=[folder_in, prefix_in],
             outputs=[log_box],
         )
 

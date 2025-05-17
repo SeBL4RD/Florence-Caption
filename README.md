@@ -26,7 +26,13 @@ You can then switch to the Manual Viewer tab, which will allow you to edit the p
 
 
 <img src="doc/batch.png" alt="Description de l'image" width="750" height="373">
-<img src="doc/viewer.png" alt="Description de l'image" width="750" height="396">
+<img src="doc/viewer.png" alt="Description de l'image" width="750" height="396"><br><br>
+
+## You can add an automated prefix for your captions :
+<img src="doc/prefix_field.png" alt="Description de l'image">
+<img src="doc/prefix_demo.png" alt="Description de l'image"><br><br><br>
+
+
 
 ## 🙏 Credits
 
