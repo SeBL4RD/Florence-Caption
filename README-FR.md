@@ -18,14 +18,18 @@
 
 ## 1. Installation rapide
 
-| Étape | Commande / Action |
-|-------|-------------------|
-| 1. Python 3.10 64-bit | <https://www.python.org/downloads/release/python-31011/> (✔ cocher *“Add to PATH”* ; redémarrer) |
-| 2. Lancez **`start.bat`** OU **`start.sh`**<br><br>
+
+1. Python 3.10 64-bit | <https://www.python.org/downloads/release/python-31011/> (✔ cocher *“Add to PATH”* ; redémarrer)
+2. Lancez **`start.bat`** OU **`start.sh`**<br><br>
 
 
 Vos images presentes dans le dossier (que vous avez selectionné) **`input/`**, seront automatiquement envoyé vers le dossier **`/Florence Caption/output/DossierHorodaté/ici`**.
 Vous pourrez donc par la suite passer sur le tab Manual Viewer, qui vous permettra d'editer les prompts à la main s'ils ne vous conviennent pas, l'enregistrement s'effectue lorsque vous cliquez en dehors de la zone texte.<br><br><br>
+
+
+<img src="doc/batch.png" alt="Description de l'image" width="1041" height="518">
+<img src="doc/viewer.png" alt="Description de l'image" width="1041" height="550">
+
 
 
 ## 🙏 Crédits
