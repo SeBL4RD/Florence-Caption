@@ -1,9 +1,7 @@
 import gradio as gr
-import os
 import string
 from math import ceil
 from pathlib import Path
-import glob
 
 MAX_IMAGES = 20
 
@@ -15,7 +13,7 @@ def get_all_drives():
             drives.append(path)
     return drives
 
-# NOUVEAU : pour pagination
+# pour pagination
 def charger_images_et_prompts(chemin: str):
     images_prompts = []
     dossier_path = Path(chemin)
@@ -26,7 +24,7 @@ def charger_images_et_prompts(chemin: str):
             txt_path = img_path.with_suffix(".txt")
             texte = txt_path.read_text(encoding="utf-8") if txt_path.exists() else ""
             images_prompts.append((str(img_path), texte))
-    return images_prompts  # On retourne tout !
+    return images_prompts
 
 def afficher_images(contenu, page):
     # contenu : liste [(img, txt), ...]
@@ -43,7 +41,7 @@ def afficher_images(contenu, page):
     # Compléter si moins d’images sur la page
     image_values += [None] * (MAX_IMAGES - len(image_values))
     prompt_values += [""] * (MAX_IMAGES - len(prompt_values))
-    status = f"✅ {total_images} image(s) trouvée(s) — page {page}/{nb_pages}" if total_images else "⚠️ Aucun fichier image trouvé"
+    status = f"✅ {total_images} image(s) found — page {page}/{nb_pages}" if total_images else "⚠️ No image files found"
     return status, *image_values, *prompt_values
 
 def sauvegarder_prompt(nouveau_prompt, index_champ, etat_images, page_actuelle):
@@ -60,7 +58,7 @@ def sauvegarder_prompt(nouveau_prompt, index_champ, etat_images, page_actuelle):
     try:
         chemin_fichier_txt.write_text(nouveau_prompt, encoding="utf-8")
     except Exception as e:
-        print(f"Erreur d'écriture dans {chemin_fichier_txt}: {e}")
+        print(f"Typing error in {chemin_fichier_txt}: {e}")
 
 
 
@@ -142,16 +140,16 @@ def start_ui():
     }               
     """) as interface:
         with gr.Column(elem_classes=["center-column"]):
-            gr.Markdown("# 🖥️ Mon interface Gradio de test")
+            gr.Markdown("# 🖥️ Manual Caption tool")
             folder_input = gr.Textbox(
-                label="Dossier contenant les images",
+                label="Folder containing your images",
                 placeholder="Exemple : ./images",
-                value=".",
+                value="Path\of\your\images or Path/of/your/images",
                 interactive=True,
                 elem_classes=["narrow-input"]
             )
             with gr.Row():
-                load_button = gr.Button("🔍 Charger les images", elem_classes=["load-btn"])
+                load_button = gr.Button("🔍 Load images", elem_classes=["load-btn"])
                 status_output = gr.Textbox(
                     show_label=False,
                     interactive=False,
