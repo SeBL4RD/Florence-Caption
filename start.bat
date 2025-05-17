@@ -20,5 +20,5 @@ if not exist "venvflor" (
 
 
 
-venvflor\Scripts\python main_caption.py
+venvflor\Scripts\python app_gui.py
 cmd /k

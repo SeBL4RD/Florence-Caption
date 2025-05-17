@@ -3,7 +3,8 @@
 
 import gradio as gr
 from pathlib import Path
-import shutil, traceback
+import shutil
+import traceback
 
 # ---------- 1.  On ré-utilise le viewer ----------
 from caption_viewer_UI_dev import (
@@ -58,7 +59,7 @@ def caption_stream(input_dir: str):
 
         logs += f"\n🏁 Terminé → {out_dir}"
         yield logs
-    except Exception as err:
+    except Exception:
         yield "❌ ERREUR :\n" + traceback.format_exc()
 
 # ---------- 4.  Construction du 2ᵉ onglet ----------
@@ -111,10 +112,10 @@ GLOBAL_CSS = """
 # ---------- 6.  Assemblage final ----------
 with gr.Blocks(css=GLOBAL_CSS) as demo:
     with gr.Tabs():
-        with gr.TabItem("🖼️ Manual viewer"):
-            build_manual_viewer_tab()     # ← ton premier onglet
         with gr.TabItem("⚙️ Batch caption"):
             build_batch_caption_tab()     # ← nouveau
+        with gr.TabItem("🖼️ Manual viewer"):
+            build_manual_viewer_tab()     # ← ton premier onglet
 
 # ---------- 7.  Lancement ----------
 if __name__ == "__main__":

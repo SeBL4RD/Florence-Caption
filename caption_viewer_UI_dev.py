@@ -96,8 +96,10 @@ def build_batch_caption_tab():
 
 
 def get_all_drives():
-    """Retourne la liste des lecteurs disponibles sous Windows (C:\, D:\, etc.)."""
-    return [f"{l}:\\" for l in string.ascii_uppercase if Path(f"{l}:\\").exists()]
+    """Détecte les lettres de disques présentes sous Windows."""
+    return [f"{drive_letter}:\\\\"              # nom explicite
+            for drive_letter in string.ascii_uppercase
+            if Path(f"{drive_letter}:\\\\").exists()]
 
 
 def charger_images_et_prompts(chemin: str):

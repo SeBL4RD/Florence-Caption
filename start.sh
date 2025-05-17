@@ -26,4 +26,4 @@ fi
 
 # Active l'environnement et exécute le script Python
 source "$VENV_DIR/bin/activate"
-python main_caption.py
+python app_gui.py
