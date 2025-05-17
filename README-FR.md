@@ -23,7 +23,7 @@
 2. Lancez **`start.bat`** OU **`start.sh`**<br><br>
 
 
-Vos images presentes dans le dossier (que vous avez selectionné) **`input/`**, seront automatiquement envoyé vers le dossier **`/Florence Caption/output/DossierHorodaté/ici`**.
+Vos images presentes dans le dossier (que vous avez selectionné) **`input/`**, seront automatiquement envoyé vers le dossier **/Florence Caption/output/DossierHorodaté/ici**.
 Vous pourrez donc par la suite passer sur le tab Manual Viewer, qui vous permettra d'editer les prompts à la main s'ils ne vous conviennent pas, l'enregistrement s'effectue lorsque vous cliquez en dehors de la zone texte.<br><br><br>
 
 

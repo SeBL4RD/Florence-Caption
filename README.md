@@ -25,8 +25,8 @@ You can then switch to the Manual Viewer tab, which will allow you to edit the p
 
 
 
-<img src="doc/batch.png" alt="Description de l'image" width="1041" height="518">
-<img src="doc/viewer.png" alt="Description de l'image" width="1041" height="550">
+<img src="doc/batch.png" alt="Description de l'image" width="750" height="373">
+<img src="doc/viewer.png" alt="Description de l'image" width="750" height="396">
 
 ## 🙏 Credits
 
