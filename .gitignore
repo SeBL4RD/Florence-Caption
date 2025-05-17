@@ -2,5 +2,9 @@ venvflor*/
 models*/
 input/*
 output/*
+temp/*
+__pycache__/*
 caption_viewer_UI.py
 caption_viewer_UI_dev-rollback.py
+test.Py
+test2.Py
