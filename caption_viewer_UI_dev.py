@@ -8,14 +8,92 @@
 import string
 from math import ceil
 from pathlib import Path
+from main_caption import generate_caption, CAPTION_PREFIX, create_timestamped_dir, TEMP_DIR
 
 import gradio as gr
 
 MAX_IMAGES = 20
 
+# ------------------------------------------------------------------
+#  Feuille de style commune à tous les onglets
+# ------------------------------------------------------------------
+GLOBAL_CSS = """
+/* ——— Zones générales ——— */
+.narrow-input { max-width: 1500px; margin: auto; }
+.center-column { max-width: 1500px; margin: auto; padding: 20px;
+                 background: #2c2c2c; border-radius: 10px; }
+/* ——— Bouton de chargement ——— */
+.load-btn { width: 200px; height: 40px; margin-right: 10px; }
+/* ——— Champ de statut ——— */
+.status-text, .status-text textarea,
+.status-text > div, .status-text > div > div {
+    height: 40px !important; background: none !important; border: none !important;
+    box-shadow: none !important; padding: 0 !important; margin: 0 !important;
+}
+.status-text textarea {
+    line-height: 40px !important; color: #aaffaa; font-weight: bold;
+    resize: none !important; padding: 0 10px !important;
+}
+"""
+
 # =====================================
 # Utilitaires disque & fichiers
 # =====================================
+
+def caption_stream(input_dir: str):
+    """Génère les captions et yield les logs ligne par ligne pour Gradio."""
+    input_path = Path(input_dir)
+    if not input_path.exists():
+        yield f"❌ Dossier introuvable : {input_path}"
+        return
+
+    images = sorted([p for p in input_path.iterdir() if p.suffix.lower() in {'.jpg', '.jpeg', '.png', '.webp'}])
+    if not images:
+        yield "⚠️ Aucune image à traiter."
+        return
+
+    yield f"🔎 {len(images)} image(s) détectée(s)…\n"
+
+    TEMP_DIR.mkdir(parents=True, exist_ok=True)
+    logs = ""
+
+    for idx, img in enumerate(images, 1):
+        try:
+            brut = generate_caption(img)
+            final = f"{CAPTION_PREFIX}{brut}"
+            (TEMP_DIR / f"{img.stem}.txt").write_text(final, encoding="utf-8")
+            line = f"✔︎ ({idx}/{len(images)}) {img.name} → {img.stem}.txt"
+        except Exception as e:
+            line = f"⚠️ ({idx}/{len(images)}) {img.name} ignorée : {e}"
+
+        logs += line + "\n"
+        yield logs                       # <= streaming vers Gradio
+
+    # fusion finale (identique à main_caption)
+    out_dir = create_timestamped_dir(Path(__file__).parent / "output")
+    for img in images:
+        (out_dir / img.name).write_bytes(img.read_bytes())
+        (TEMP_DIR / f"{img.stem}.txt").replace(out_dir / f"{img.stem}.txt")
+
+    logs += f"\n🏁 Terminé. Résultats : {out_dir}"
+    yield logs
+
+
+
+def build_batch_caption_tab():
+    with gr.Column():
+        folder_cap = gr.Textbox(label="Images folder", value="input/", interactive=True)
+        run_btn    = gr.Button("🚀 Generate captions")
+        log_box    = gr.Textbox(label="Console output", lines=20, interactive=False)
+
+        run_btn.click(
+            fn=caption_stream,           # <-- la fonction qui yield
+            inputs=[folder_cap],
+            outputs=[log_box],
+        )
+
+
+
 
 def get_all_drives():
     """Retourne la liste des lecteurs disponibles sous Windows (C:\, D:\, etc.)."""
@@ -93,33 +171,8 @@ def sauvegarder_prompt(nouveau_prompt, idx, etat_images, page):
 # Interface Gradio
 # =====================================
 
-def start_ui():
-    css_styles = """
-    /* ——— Zones générales ——— */
-    .narrow-input { max-width: 1500px; margin: auto; }
-    .center-column { max-width: 1500px; margin: auto; padding: 20px; background: #2c2c2c; border-radius: 10px; }
-    /* ——— Bouton de chargement ——— */
-    .load-btn { width: 200px; height: 40px; margin-right: 10px; }
-    /* ——— Champ de statut ——— */
-    .status-text, .status-text textarea,
-    .status-text > div, .status-text > div > div {
-        height: 40px !important;
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    .status-text textarea {
-        line-height: 40px !important;
-        color: #aaffaa;
-        font-weight: bold;
-        resize: none !important;
-        padding: 0 10px !important;
-    }
-    """
-
-    with gr.Blocks(css=css_styles) as demo:
+def build_manual_viewer_tab():
+    with gr.Column(elem_classes=["center-column"]):
         # ---------- Layout principal ----------
         with gr.Column(elem_classes=["center-column"]):
             gr.Markdown("# 🖥️ Manual Caption Tool")
@@ -260,7 +313,7 @@ def start_ui():
             )
 
     # ---------- Lancement ----------
-    demo.launch(allowed_paths=get_all_drives(), debug=True)
+    # demo.launch(allowed_paths=get_all_drives(), debug=True)
 
 
 # =====================================
@@ -268,4 +321,6 @@ def start_ui():
 # =====================================
 
 if __name__ == "__main__":
-    start_ui()
+    with gr.Blocks(css=GLOBAL_CSS) as demo:
+        build_manual_viewer_tab()
+    demo.launch(allowed_paths=get_all_drives(), debug=True)
