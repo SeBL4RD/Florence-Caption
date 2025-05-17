@@ -1,45 +1,29 @@
-# Florence 2 Caption Tool
+# Florence 2 Caption Tool — GUI v1.0<br><br>
 
-Génère automatiquement des descriptions détaillées des images via Florence 2. 
-Outil conçu pour la creation de dataset d'images pour les entrainements (Stable Diffusion, Flux, HiDream, etc...)
+### Complete Interface (Gradio) for:
 
-> ⚡ Optimisé : GPU CUDA, FP16, SDPA & modèle local (PromptGen v2).  
+1. **Batch Caption** – generates automatic image descriptions with *MiaoshouAI / Florence‑2 PromptGen v2.0*.
+2. **Manual Viewer** – displays images 20 by 20, allows you to reread / correct each prompt manually and save instantly.<br><br><br>
 
+> ⚡ Optimized CUDA / fp16 & SDPA — also works on CPU if needed.
 
-## Requirements
-❗ Windows seulement pour le moment.
-
-Python 3.10 : https://www.python.org/ftp/python/3.10.11/python-3.10.11-amd64.exe
-Cochez "Add PATH to envirronement" lors de l'installation, puis redemarrez Windows.
-
-Une carte Nvidia (recente) de preference, meme avec peu de Vram.
+> **Windows or Linux**
+> An NVIDIA graphics card is recommended.
 
 ---
+<br><br>
 
-## ✨ Fonctionnalités
+## 1. Quick Installation
 
-| Fonction | Détail |
-|----------|--------|
-| **Batch** | Traite toutes les images `.png`, `.jpg`, `.jpeg`, `.webp` du dossier `input/`. |
-| **Modèle local** | Télécharge **une seule fois** le checkpoint *Florence‑2‑base‑PromptGen‑v2.0* dans `models/FlorencePromptGen/`, puis fonctionne hors‑ligne. |
-| **GPU / CPU** | Utilise automatiquement le GPU CUDA (fp16). Bascule en CPU si aucun GPU n’est dispo. |
-| **Préfixe personnalisé** | Ajoutez une chaîne (ex. `"Norman, "`) devant chaque caption via `CAPTION_PREFIX`. |
-| **Logs propres** | Warnings & logs verbeux (timm, transformers) filtrés ; affichage clair du progrès. |
+| Step | Command / Action |
+|-------|-------------------|
+| 1. Python 3.10 64-bit | <https://www.python.org/downloads/release/python-31011/> (✔ check *"Add to PATH"* ; restart) |
+| 2. Run **`start.bat`** OR **`start.sh`**<br><br>
 
----
+Your images located in the selected folder **`input/`**, will be automatically sent to the folder **`/Florence Caption/output/TimestampedFolder/here`**.
+You can then switch to the Manual Viewer tab, which will allow you to edit the prompts manually if they don't suit you. Saving is done when you click outside the text area.<br><br><br>
 
-## 📂 Structure du projet
-Effectue un captionning de toutes les images presentes dans **`input/`** et écrit chaque résultat dans **`output/`** sous le même nom + `.txt`.
-
-## Utilisation
-
-Placez vos images dans **`input/`**, puis lancez **`start.bat`**
-
-
----
-
-
-## 🙏 Crédits
+## 🙏 Credits
 
 - [Microsoft / Florence-2](https://huggingface.co/microsoft)
 - [MiaoshouAI / Florence‑2 PromptGen v2.0](https://huggingface.co/MiaoshouAI/Florence-2-base-PromptGen-v2.0)
