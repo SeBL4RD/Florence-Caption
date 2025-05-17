@@ -20,7 +20,7 @@
 
 2. Run **`start.bat`** OR **`start.sh`**<br><br>
 
-Your images located in the selected folder **`input/`**, will be automatically sent to the folder **`/Florence Caption/output/TimestampedFolder/here`**.
+Your images located in the selected folder **`input/`**, will be automatically sent to the folder **/Florence Caption/output/TimestampedFolder/here**.
 You can then switch to the Manual Viewer tab, which will allow you to edit the prompts manually if they don't suit you. Saving is done when you click outside the text area.<br><br><br>
 
 
