@@ -46,6 +46,25 @@ def afficher_images(contenu, page):
     status = f"✅ {total_images} image(s) trouvée(s) — page {page}/{nb_pages}" if total_images else "⚠️ Aucun fichier image trouvé"
     return status, *image_values, *prompt_values
 
+def sauvegarder_prompt(nouveau_prompt, index_champ, etat_images, page_actuelle):
+    # On veut l'image affichée à la position index_champ sur la page courante
+    page = page_actuelle
+    debut = (page - 1) * MAX_IMAGES
+    try:
+        chemin_image = etat_images[debut + index_champ][0]
+    except Exception:
+        return  # hors index ou pas d'image ici
+    if chemin_image is None or chemin_image == "":
+        return
+    chemin_fichier_txt = Path(chemin_image).with_suffix(".txt")
+    try:
+        chemin_fichier_txt.write_text(nouveau_prompt, encoding="utf-8")
+    except Exception as e:
+        print(f"Erreur d'écriture dans {chemin_fichier_txt}: {e}")
+
+
+
+
 def start_ui():
     with gr.Blocks(css="""
     .narrow-input {
@@ -159,7 +178,13 @@ def start_ui():
             for numero_case in range(MAX_IMAGES):
                 with gr.Row(visible=False) as ligne:
                     champ_image = gr.Image(label=f"Image {numero_case+1}", show_label=False, height=200)
-                    champ_texte = gr.Textbox(label="", lines=4, max_lines=10, show_label=False)
+                    champ_texte = gr.Textbox(
+                        label="", 
+                        lines=4, 
+                        max_lines=10, 
+                        show_label=False, 
+                        interactive=True  # <-- c'est ce qui permet de modifier
+                    )
                     images.append(champ_image)
                     textboxes.append(champ_texte)
                     rows.append(ligne)
@@ -171,7 +196,7 @@ def start_ui():
                 visible=False,
                 interactive=True,
             )
-            
+
         # --- VARIABLE D’ÉTAT pour stocker toutes les images chargées
         global_etat_images = gr.State([])
         global_page = gr.State(1)
@@ -259,8 +284,18 @@ def start_ui():
             outputs=[status_output] + rows + images + textboxes + [page_select_top, page_select_bottom]
         )
 
-        # Quand on change de page
-        
+        for index_champ, champ_texte in enumerate(textboxes):
+            champ_texte.change(
+                sauvegarder_prompt,
+                inputs=[
+                    champ_texte,
+                    gr.State(index_champ),
+                    global_etat_images,   # <<— variable d’état qui contient TOUTES les images de la session
+                    global_page           # <<— numéro de page actuellement affichée
+                ],
+                outputs=[]
+            )
+            
 
 
 
